@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "aws-multipart-parser": "0.2.1",
+    "@aws-sdk/client-apigatewaymanagementapi": "3.535.0",
     "bytenode": "1.5.3",
     "cron-parser": "4.9.0",
     "dotenv": "8.6.0",

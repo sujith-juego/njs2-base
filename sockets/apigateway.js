@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+const { ApiGatewayManagementApi } = require("@aws-sdk/client-apigatewaymanagementapi");
 const pjson = require('../package.json');
 const GlobalMethods = require('../helper/globalMethods');
 const [ WSS_BASE_URL, LAMBDA ] = GlobalMethods.loadConfig(["WSS_BASE_URL", "LAMBDA"], pjson.name);
@@ -13,7 +13,7 @@ const emit = async (connectionId, payload) => {
       endpoint: WSS_BASE_URL
     }
 
-    const apiGatewayManagementApi = new AWS.ApiGatewayManagementApi(credentials);
+    const apiGatewayManagementApi = new ApiGatewayManagementApi(credentials);
     await apiGatewayManagementApi.postToConnection({
       ConnectionId: connectionId,
       Data: JSON.stringify(payload),

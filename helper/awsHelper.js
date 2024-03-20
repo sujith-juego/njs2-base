@@ -8,7 +8,7 @@ const [
   AWS_ROLE_ARN
 ] = GlobalMethods.loadConfig(["AWS_REGION", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY_ID", "AWS_ROLE_ARN"], pjson.name);
 const {LAMBDA} = require(path.join(process.cwd(), "src/config/config.json"));
-const {Lambda} = require("aws-sdk");
+const {STS, Lambda} = require("@aws-sdk/client-lambda");
 const awsHelper = {};
 // Assume role to make aws sdk calls.
 awsHelper.getCrossAccountCredentials = async () => {
@@ -20,11 +20,12 @@ awsHelper.getCrossAccountCredentials = async () => {
         secretAccessKey: AWS_SECRET_ACCESS_KEY_ID
       });
     } else {
-      const AWS = require('aws-sdk');
-      const sts = new AWS.STS({
+      const sts = new STS({
         region: AWS_REGION,
-        accessKeyId: AWS_ACCESS_KEY_ID,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY_ID,
+        credentials: {
+          accessKeyId: AWS_ACCESS_KEY_ID,
+          secretAccessKey: AWS_SECRET_ACCESS_KEY_ID,
+        },
       });
       const timestamp = (new Date()).getTime();
       const params = {
@@ -55,8 +56,10 @@ awsHelper.executeFromLambda = async (functionDetail) => {
         apiVersion: '2015-03-31',
         region: LAMBDA.AWS_REGION,
         endpoint: LAMBDA.END_POINT,
-        accessKeyId: "any",
-        secretAccessKey: "any"
+        credentials: {
+          accessKeyId: "any",
+          secretAccessKey: "any"
+        }
       };
 
       const lambda = new Lambda(lambdaConfig);
